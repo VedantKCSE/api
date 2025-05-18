@@ -96,7 +96,9 @@ def analyze_with_openai(analysis: dict):
     trimmed_snippet = analysis.get("content_snippet", "")[:300]
 
     prompt = f"""
-Analyze this URL for phishing risk based on the following characteristics:
+You are a helpful assistant that analyzes URLs to check if they are safe or potentially phishing (fake or dangerous websites).
+
+Here is the information about the URL:
 
 - URL: {analysis['url']}
 - Domain: {analysis['domain']}
@@ -108,13 +110,13 @@ Analyze this URL for phishing risk based on the following characteristics:
 - Contains IP Address: {analysis['url_structure']['contains_ip']}
 - Number of Dots: {analysis['url_structure']['num_dots']}
 - Redirect Count: {analysis['redirect_count']}
-- Page Snippet (first 300 chars): {trimmed_snippet}
+- Page Snippet (first 300 characters): {trimmed_snippet}
 
-Based on this, return a JSON object with:
-- "verdict": "Phishing" or "Safe"
-- "reason": short explanation why
+Now based on this, return a JSON object with:
+- "verdict": either "Phishing" or "Safe"
+- "reason": explain in simple words why the URL is safe or dangerous. Do not use technical terms. Make sure even someone without technical knowledge can understand.
 
-Only return a valid JSON object. No explanation, markdown, or other output.
+Only return a valid JSON object. Do not add anything else like explanations, markdown, or notes.
 """
 
     response = client.chat.completions.create(
